@@ -74,4 +74,8 @@ public class Page {
         else
             return rows/limit;
     }
+
+    public int getFrom(){
+        return Math.max((current - 2), 1);
+    }
 }
