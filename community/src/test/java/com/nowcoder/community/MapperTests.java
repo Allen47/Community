@@ -66,7 +66,7 @@ public class MapperTests {
 
 
     @Test
-    public void testSelectPost(){
+    public void testSelectPosts(){
         //offset:从哪里开始查  limit：查多少
         List<DiscussPost> res = discussPostMapper.selectDiscussPost(0,0,10);
         for(DiscussPost dis:res){
