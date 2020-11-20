@@ -18,12 +18,13 @@ public class Page {
     //查询路径
     private String path;
 
-    public Page(int current, int limit, int rows, String path) {
-        this.current = current;
-        this.limit = limit;
-        this.rows = rows;
-        this.path = path;
-    }
+//    不能自定义构造函数，thymeleaf在自动初始化时调用的是默认的，会报错
+//    public Page(int current, int limit, int rows, String path) {
+//        this.current = current;
+//        this.limit = limit;
+//        this.rows = rows;
+//        this.path = path;
+//    }
 
     public int getCurrent() {
         return current;
@@ -64,18 +65,29 @@ public class Page {
     获取当前页面的起始行
     current*limit - limit
      */
-    public int getOffset(int current){
+    public int getOffset(){
         return (current-1) * limit;
     }
 
-    public int getTotalPageNum(){
+    public int getTotal(){
         if(rows % limit != 0)
             return rows/limit + 1;
         else
             return rows/limit;
     }
 
+    /*
+    获取起始页码
+     */
     public int getFrom(){
         return Math.max((current - 2), 1);
     }
+
+    public int getTo(){
+        int to = current + 2;
+        int total =getTotal();
+        return Math.min(to,total);
+    }
+
+
 }
