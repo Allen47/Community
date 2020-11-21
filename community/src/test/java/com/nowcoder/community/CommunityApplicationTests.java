@@ -25,11 +25,11 @@ public class CommunityApplicationTests implements ApplicationContextAware {
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
+		this.applicationContext = applicationContext; //当识别到容器时，会自动初始化；引用并记录下来，后面就可以继续用了
 	}
 
 	@Test
-	public void testApplicationContext() {
+	public void testApplicationContext() {//test 从容器中获取bean
 		System.out.println(applicationContext);
 
 		AlphaDao alphaDao = applicationContext.getBean(AlphaDao.class);
@@ -44,6 +44,7 @@ public class CommunityApplicationTests implements ApplicationContextAware {
 		AlphaService alphaService = applicationContext.getBean(AlphaService.class);
 		System.out.println(alphaService);
 
+		//验证被Spring容器管理的对象是否默认仅仅实例化一次:是
 		alphaService = applicationContext.getBean(AlphaService.class);
 		System.out.println(alphaService);
 	}
