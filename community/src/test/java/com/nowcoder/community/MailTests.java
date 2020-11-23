@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 /**
  * @author Msq
@@ -20,11 +22,24 @@ public class MailTests {
     @Autowired
     private MailClient mailClient;
 
+    @Autowired
+    private TemplateEngine templateEngine;
+
     @Test
     public void testTextmail(){
         System.out.println("start,to 1084725650");
         mailClient.sendMail("1084725650@qq.com","test by msq","hello,I am a test mail");
         System.out.println("end");
+    }
+
+    @Test
+    public void testHtmlMail(){
+        Context context = new Context();
+        context.setVariable("username","Heliu");
+        String content = templateEngine.process("/mail/mailDemo", context);
+        System.out.println(content);
+
+        mailClient.sendMail("1084725650@qq.com", "HTML",content);
     }
 
 }
