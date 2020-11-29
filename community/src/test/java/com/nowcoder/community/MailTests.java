@@ -27,19 +27,21 @@ public class MailTests {
 
     @Test
     public void testTextmail(){
-        System.out.println("start,to 1084725650");
-        mailClient.sendMail("1084725650@qq.com","test by msq","hello,I am a test mail");
+        System.out.println("start,to 1371908769");
+        mailClient.sendMail("1371908769@qq.com","test by msq","hello,I am a test mail");
         System.out.println("end");
     }
 
     @Test
     public void testHtmlMail(){
+        System.out.println("start");
         Context context = new Context();
-        context.setVariable("username","Heliu");
+        context.setVariable("username","msq");
         String content = templateEngine.process("/mail/mailDemo", context);
         System.out.println(content);
 
-        mailClient.sendMail("1084725650@qq.com", "HTML",content);
+        mailClient.sendMail("1371908769@qq.com", "HTML",content);
+        System.out.println("end");
     }
 
 }
