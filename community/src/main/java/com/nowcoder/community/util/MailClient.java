@@ -28,12 +28,15 @@ public class MailClient {
 
     public void sendMail(String to, String subject, String content){
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
         try {
+            MimeMessageHelper helper = new MimeMessageHelper(message,true);
             helper.setFrom(from);
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(content);
+            helper.setText(content,true);
+
+//            //添加附件
+//            helper.addAttachment(file.getName(), file);
             mailSender.send(message);
         } catch (MessagingException e) {
             logger.error("发送邮件失败：" + e.getMessage());

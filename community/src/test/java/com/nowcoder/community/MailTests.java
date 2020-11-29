@@ -36,11 +36,11 @@ public class MailTests {
     public void testHtmlMail(){
         System.out.println("start");
         Context context = new Context();
-        context.setVariable("username","msq");
-        String content = templateEngine.process("/mail/mailDemo", context);
+        context.setVariable("username","heliu");
+        String content = templateEngine.process("/mail/mailDemo.html", context);
         System.out.println(content);
 
-        mailClient.sendMail("1371908769@qq.com", "HTML",content);
+        mailClient.sendMail("1084725650@qq.com", "你好哟",content);
         System.out.println("end");
     }
 
