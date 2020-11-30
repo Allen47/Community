@@ -105,7 +105,7 @@ public class UserService implements CommunityConstant {
         user.setSalt(CommunityUtil.generateUUID().substring(0,5));
         user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt()));
         user.setType(0); //注册不代表激活
-        user.setType(0); //0-普通用户 1-管理员 2-版主
+        user.setStatus(0); //0-普通用户 1-管理员 2-版主
         user.setActivationCode(CommunityUtil.generateUUID());
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png",new Random().nextInt(100)));
         user.setCreateTime(new Date());
