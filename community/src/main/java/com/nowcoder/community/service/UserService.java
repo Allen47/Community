@@ -126,12 +126,6 @@ public class UserService implements CommunityConstant {
 
     }
 
-    /*
-    登出操作
-     */
-    public void logout(String ticket) {
-        loginTicketMapper.updateStatus(ticket, 1);
-    }
 
     /*
     登录操作
@@ -180,4 +174,16 @@ public class UserService implements CommunityConstant {
         map.put("ticket",loginTicket.getTicket());
         return map;
     }
+
+    /*
+    登出操作
+    */
+    public void logout(String ticket) {
+        loginTicketMapper.updateStatus(ticket, 1);
+    }
+
+    /*
+    找到登陆凭证
+     */
+    public LoginTicket findLoginTicket(String ticket){ return loginTicketMapper.selectByTicket(ticket);}
 }
