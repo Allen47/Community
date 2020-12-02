@@ -25,12 +25,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-/**
- * @author Msq
- * @date 2020/11/24 - 1:18
- */
 @Controller
-public class LoginController implements CommunityConstant{
+public class LoginController implements CommunityConstant {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
     private UserService userService;
@@ -41,19 +39,21 @@ public class LoginController implements CommunityConstant{
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    @RequestMapping(path = "/register", method = RequestMethod.GET)
+    public String getRegisterPage() {
+        return "/site/register";
+    }
 
-    @RequestMapping(path="/login", method = RequestMethod.GET)
-    public String getLoginPage(){return "/site/login";}
-
-    @RequestMapping(path="/register", method = RequestMethod.GET)
-    public String getRegisterPage(){return "/site/register";}
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public String getLoginPage() {
+        return "/site/login";
+    }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public String register(Model model, User user){
+    public String register(Model model, User user) {
         Map<String, Object> map = userService.register(user);
-        if(map == null || map.isEmpty()) { //没有任何错误信息
-            model.addAttribute("msg", "注册成功,我们已经向您的邮箱发送了一封激活邮件，请尽快激活！");
+        if (map == null || map.isEmpty()) {
+            model.addAttribute("msg", "注册成功,我们已经向您的邮箱发送了一封激活邮件,请尽快激活!");
             model.addAttribute("target", "/index");
             return "/site/operate-result";
         } else {
@@ -82,45 +82,44 @@ public class LoginController implements CommunityConstant{
     }
 
     @RequestMapping(path = "/kaptcha", method = RequestMethod.GET)
-    public void getKaptcha(HttpServletResponse response, HttpSession session){
-        //生成验证码
+    public void getKaptcha(HttpServletResponse response, HttpSession session) {
+        // 生成验证码
         String text = kaptchaProducer.createText();
         BufferedImage image = kaptchaProducer.createImage(text);
 
-        //将验证码存入session
-        session.setAttribute("kaptcha",text);
+        // 将验证码存入session
+        session.setAttribute("kaptcha", text);
 
-        //将图片输出给浏览器
+        // 将突图片输出给浏览器
         response.setContentType("image/png");
         try {
             OutputStream os = response.getOutputStream();
             ImageIO.write(image, "png", os);
         } catch (IOException e) {
-            logger.error("响应验证码失败：" + e.getMessage());
+            logger.error("响应验证码失败:" + e.getMessage());
         }
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(String username, String password, String code, boolean rememberme,
-                        Model model, HttpSession session, HttpServletResponse response){
-        //检查验证码
-        String kaptcha = (String)session.getAttribute("kaptcha");
-        if(StringUtils.isBlank(kaptcha) || StringUtils.isBlank(code) || !code.equalsIgnoreCase(kaptcha)){
-            model.addAttribute("codeMsg", "验证码不正确");
+                        Model model, HttpSession session, HttpServletResponse response) {
+        // 检查验证码
+        String kaptcha = (String) session.getAttribute("kaptcha");
+        if (StringUtils.isBlank(kaptcha) || StringUtils.isBlank(code) || !kaptcha.equalsIgnoreCase(code)) {
+            model.addAttribute("codeMsg", "验证码不正确!");
             return "/site/login";
         }
 
-        //检查账号密码-->调service
+        // 检查账号,密码
         int expiredSeconds = rememberme ? REMEMBER_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
         Map<String, Object> map = userService.login(username, password, expiredSeconds);
-        if(map.containsKey("ticket")){ //有登录凭证
+        if (map.containsKey("ticket")) {
             Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
             cookie.setPath(contextPath);
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
             return "redirect:/index";
-
-        }else{ //无凭证
+        } else {
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             return "/site/login";
