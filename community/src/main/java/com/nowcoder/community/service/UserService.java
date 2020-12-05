@@ -191,4 +191,9 @@ public class UserService implements CommunityConstant {
     更新头像图片路径
      */
     public int updateHeader(int userId, String headerUrl){ return userMapper.updateHeader(userId, headerUrl);}
+
+    /*
+    修改用户密码
+     */
+    public int updatePassword(int userId, String password){ return userMapper.updatePassword(userId, password);}
 }

@@ -4,7 +4,6 @@ import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
-import com.sun.deploy.net.HttpResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,17 +51,18 @@ public class UserController {
     multipartFile 用于接收文件
     model 用于给出各种页面提示
      */
-    @RequestMapping(path = "/upload", method = RequestMethod.POST)
+    @RequestMapping(path = "/uploadHeader", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile multipartFile, Model model){
         if(multipartFile == null ){
-            model.addAttribute("error", "您还没有选择图片");
+            model.addAttribute("headerError", "您还没有选择图片");
             return "site/setting";
         }
 
         String fileName = multipartFile.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf("."));  // --> suffix = ".png"
-        if(StringUtils.isBlank(suffix)){
-            model.addAttribute("error", "文件格式不正确");
+        if(StringUtils.isBlank(suffix) || (!suffix.equals(".png")
+            && !suffix.equals(".jpg") && !suffix.equals(".jpeg"))){
+            model.addAttribute("headerError", "文件格式不正确");
             return "site/setting";
         }
 
@@ -115,7 +115,40 @@ public class UserController {
 
     }
 
+    @RequestMapping(path = "/uploadPassword", method = RequestMethod.POST)
+    public String uploadPassword(String oldPasword, String newPassword1, String newPassword2, Model model){
+        if(oldPasword == null || StringUtils.isBlank(oldPasword)){
+            model.addAttribute("error", "您未输入密码！");
+            return "site/setting";
+        }
+        if(oldPasword.length() < 8){
+            model.addAttribute("oldError", "密码长度不能小于8位!");
+            return "site/setting";
+        }
 
+        User user = hostHolder.getUser();
+        String originPw = user.getPassword();
+        oldPasword = CommunityUtil.md5(oldPasword + user.getSalt());
+        if(newPassword1.length() < 8){
+            model.addAttribute("error", "密码长度不能小于8位!");
+            return "site/setting";
+        }
+        if(!oldPasword.equals(originPw)){
+            model.addAttribute("oldError", "与原密码不一致！");
+            return "site/setting";
+        }
+
+        if(!newPassword1.equals(newPassword2)){
+            model.addAttribute("error", "两次输入的密码不一致！");
+            return "site/setting";
+        }
+
+        newPassword1 = CommunityUtil.md5(newPassword1 + user.getSalt());
+        userService.updatePassword(user.getId(),newPassword1);
+
+        return "redirect:/index";
+
+    }
 }
 
 
