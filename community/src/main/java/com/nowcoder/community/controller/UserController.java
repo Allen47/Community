@@ -1,5 +1,6 @@
 package com.nowcoder.community.controller;
 
+import com.nowcoder.community.annotation.LoginRequired;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityUtil;
@@ -44,6 +45,7 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage(){ return "/site/setting";}
 
@@ -51,6 +53,7 @@ public class UserController {
     multipartFile 用于接收文件
     model 用于给出各种页面提示
      */
+    @LoginRequired
     @RequestMapping(path = "/uploadHeader", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile multipartFile, Model model){
         if(multipartFile == null ){
@@ -115,6 +118,7 @@ public class UserController {
 
     }
 
+    @LoginRequired
     @RequestMapping(path = "/uploadPassword", method = RequestMethod.POST)
     public String uploadPassword(String oldPasword, String newPassword1, String newPassword2, Model model){
         if(oldPasword == null || StringUtils.isBlank(oldPasword)){
