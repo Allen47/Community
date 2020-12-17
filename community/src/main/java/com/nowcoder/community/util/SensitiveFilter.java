@@ -132,7 +132,7 @@ public class SensitiveFilter {
     }
 
     // 判断是否是符号
-    public boolean isSymbol(char c){
+    private boolean isSymbol(char c){
         // 0x2E80~0x9FFF 是东亚文字范围 --> 在此范围之外且非字母/数字才算特殊符号
         return !CharUtils.isAsciiAlphanumeric(c) && (c < 0x2E80 || c > 0x9FFF);
     }
