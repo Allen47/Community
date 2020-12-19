@@ -10,7 +10,7 @@ function publish() {
     var content = $("#message-text").val();
 
     // 发送异步请求 post方式
-    $.post{
+    $.post(
         CONTEXT_PATH + "/discuss/add",
         {"title":title, "content":content},
         function(data){ // 回调函数
@@ -27,7 +27,7 @@ function publish() {
                 }
             }, 2000);
         }
-    }
+    )
 
 
 };
